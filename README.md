@@ -43,7 +43,6 @@ services:
       - 'MONGO_USER=username'
       - 'MONGO_PASSWORD=mypw'
       - 'BUCKET_PATH=mongo'
-      - 'OLDER_THAN=2 hours ago'
       - 'GPG_PUBKEY_PATH=/var/gpgkeys/backupPub.key'
 ```
 
