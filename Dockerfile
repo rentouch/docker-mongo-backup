@@ -12,13 +12,13 @@ RUN apt-get install -q -y --force-yes \
 # AWS Command Line Interface
 RUN pip install awscli==1.9.15
 
-# Note that because cron does not seem to know about Docker's environment
-# variables, we have to read them in from a file that we write out
-# in entrypoint.sh at runtime.
-#RUN echo "* * * * * env - \`cat /tmp/env.sh\` /bin/bash -c '(sh /code/run-backup.sh) >> /code/backups-cron.log 2>>\&1'" | crontab -
-RUN echo "* * * * * sh /code/run-backup.sh >> /code/backups-cron.log" | crontab -
+# Do backup all 5 minutes
+RUN echo "5,10,15,20,25,30,35,40,45,50,55 * * * * sh /code/run-backup.sh >> /code/backups-cron.log" | crontab -
+# Do backup every hour
+RUN (crontab -l ; echo "0 * * * * sh /code/run-backup.sh hourly >> /code/backups-cron.log")| crontab -
+# Do daily backup at midnight
+RUN (crontab -l ; echo "7 0 * * * sh /code/run-backup.sh daily >> /code/backups-cron.log")| crontab -
 
-#RUN crontab -l
 
 RUN mkdir -p /code
 WORKDIR /code

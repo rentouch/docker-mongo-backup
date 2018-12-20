@@ -1,24 +1,34 @@
 #!/bin/sh
 
+# stop if any of these commands fail
+set -e
+
 # Load env variables from temporary file
 # source /tmp/env.sh
 export $(grep -v '^#' /tmp/env.sh | xargs -d '\n')
 
+## Print all env variables for debugging purposes
 #set
 #set -x
 
-# Credit for lots of this goes to: https://github.com/siomiz/PostgreSQL-S3
-set -e # stop if any of these commands fail
+# Catch if we have to do a daily, hourly or (all five minutes) backup
+if [ -z "$1" ]
+  then
+    BACKUP_RATE='last'
+else
+    BACKUP_RATE=$1
+fi
 
-echo "*** Starting run-backup.sh ***"
+
+echo "*** Starting run-backup.sh ($BACKUP_RATE) ***"
 
 DATE=$(date +%Y%m%d_%H%M%S)
 FILE="/tmp/$PREFIX-$DATE.archive"
 GPG_FILE="/tmp/$PREFIX-$DATE.archive.gpg"
-S3_URI="s3://$S3_BUCKET_NAME/$BUCKET_PATH/$PREFIX-$DATE.archive.gpg.gz"
+S3_URI="s3://$S3_BUCKET_NAME/$BUCKET_PATH/$BACKUP_RATE/$PREFIX-$DATE.archive.gpg.gz"
 
 echo "> Running mongodump"
-mongodump --host ${MONGO_HOST} --port ${MONGO_PORT} -u ${MONGO_USER} -p ${MONGO_PASSWORD} --archive=$FILE
+mongodump --host ${MONGO_HOST} --port ${MONGO_PORT} -u ${MONGO_USER} -p ${MONGO_PASSWORD} --ssl --sslAllowInvalidCertificates --archive=$FILE
 
 echo "> import public key from /var/gpgkeys/"
 gpg --import ${GPG_PUBKEY_PATH}
@@ -39,6 +49,6 @@ rm $FILE
 rm "$GPG_FILE.gz"
 
 echo "> Cleanup S3"
-bash /code/cleanup.sh
+bash /code/cleanup.sh $BACKUP_RATE
 
 echo "> Done."
