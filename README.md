@@ -21,6 +21,12 @@ The public-key for gpg should be placed inside a directory and mounted as a
 volume into the container.
 
 
+Restore backup
+--------------
+1. Run  
+   ```mongorestore --host <host> --port <port> --username <username> --password <pq> --drop <mongo-dump-folder>```
+
+
 Example docker-compose declaration
 ----------------------------------
 
