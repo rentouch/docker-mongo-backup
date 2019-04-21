@@ -24,7 +24,7 @@ volume into the container.
 Restore backup
 --------------
 1. Run  
-   ```mongorestore --host <host> --port <port> --username <username> --password <pq> --drop <mongo-dump-folder>```
+   ```mongorestore --host <host> --port <port> --username <username> --password <pq> --drop --archive=<mongo-dump-archive>```
 
 
 Example docker-compose declaration
