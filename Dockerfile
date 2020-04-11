@@ -12,8 +12,8 @@ RUN apt-get install -q -y --force-yes \
 # AWS Command Line Interface
 RUN pip install awscli==1.9.15
 
-# Do backup all 5 minutes
-RUN echo "5,10,15,20,25,30,35,40,45,50,55 * * * * sh /code/run-backup.sh >> /code/backups-cron.log" | crontab -
+# Do backup all 15 minutes
+RUN echo "15,30,45 * * * * sh /code/run-backup.sh >> /code/backups-cron.log" | crontab -
 # Do backup every hour
 RUN (crontab -l ; echo "0 * * * * sh /code/run-backup.sh hourly >> /code/backups-cron.log")| crontab -
 # Do daily backup at midnight
