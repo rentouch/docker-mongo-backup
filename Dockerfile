@@ -10,7 +10,7 @@ RUN apt-get install -q -y --force-yes \
   gzip
 
 # AWS Command Line Interface
-RUN pip install awscli==1.9.15
+RUN pip install awscli==1.18.72
 
 # Do backup all 15 minutes
 RUN echo "15,30,45 * * * * sh /code/run-backup.sh >> /code/backups-cron.log" | crontab -
