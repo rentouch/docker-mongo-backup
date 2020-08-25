@@ -6,7 +6,7 @@ It does also cleanup old backups.
 
 #### Schedules
 It does a backup every
-- 5 Minutes to the folder ./latest 
+- 15 Minutes to the folder ./latest 
 - hour to the folder ./hourly
 - day to the folder ./daily
 
