@@ -51,6 +51,7 @@ services:
       - 'MONGO_PASSWORD=mypw'
       - 'BUCKET_PATH=mongo'
       - 'GPG_PUBKEY_PATH=/var/gpgkeys/backupPub.key'
+      - 'NO_SSL=true'  # this is optional, default is false
 ```
 
 Building

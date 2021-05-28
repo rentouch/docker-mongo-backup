@@ -19,6 +19,11 @@ else
     BACKUP_RATE=$1
 fi
 
+# Check if we should use SSL or not to connect to the DB. USE_SSL should be emtpy / undefined if not
+if [ -z "$NO_SSL" ]
+then
+    USE_SSL=true
+fi
 
 echo "*** Starting run-backup.sh ($BACKUP_RATE) ***"
 
@@ -28,7 +33,7 @@ GPG_FILE="/tmp/$PREFIX-$DATE.archive.gpg"
 S3_URI="s3://$S3_BUCKET_NAME/$BUCKET_PATH/$BACKUP_RATE/$PREFIX-$DATE.archive.gpg.gz"
 
 echo "> Running mongodump"
-mongodump --host ${MONGO_HOST} --port ${MONGO_PORT} -u ${MONGO_USER} -p ${MONGO_PASSWORD} --ssl --sslAllowInvalidCertificates --archive=$FILE
+mongodump --host ${MONGO_HOST} --port ${MONGO_PORT} -u ${MONGO_USER} -p ${MONGO_PASSWORD} ${USE_SSL:+--ssl} --sslAllowInvalidCertificates --archive=$FILE
 
 echo "> import public key from /var/gpgkeys/"
 gpg --import ${GPG_PUBKEY_PATH}
