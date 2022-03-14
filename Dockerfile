@@ -1,12 +1,11 @@
-FROM mongo:4.0.4-xenial
+FROM mongo:5.0.6
 MAINTAINER Dominique Burnand <youwillfind@me.com>
 
-USER root
 RUN apt-get update
 RUN apt-get install -q -y --force-yes \
   cron \
   gnupg \
-  python-pip \
+  python3-pip \
   gzip
 
 # AWS Command Line Interface
@@ -28,5 +27,15 @@ ADD cleanup.sh /code/cleanup.sh
 RUN chmod +x /code/entrypoint.sh
 RUN chmod +x /code/cleanup.sh
 
+# Create non root user
+RUN adduser --uid 888 app
+RUN chown -R 888 /code
+
+# Cron runable by custom user
+RUN chmod u+s /usr/sbin/cron
+
+# Drop to non-root user
+USER 888
+
 ENTRYPOINT ["sh", "entrypoint.sh"]
-CMD [""] # overrides the default from image we inherited from
+CMD [""]
