@@ -12,11 +12,11 @@ RUN apt-get install -q -y --force-yes \
 RUN pip install awscli==1.18.72
 
 # Do backup all 15 minutes
-RUN echo "22,37,52 * * * * sh /code/run-backup.sh >> /code/backups-cron.log" | crontab -
+RUN echo "22,37,52 * * * * perl -le 'sleep rand 60' && sh /code/run-backup.sh >> /code/backups-cron.log" | crontab -
 # Do backup every hour
-RUN (crontab -l ; echo "7 * * * * sh /code/run-backup.sh hourly >> /code/backups-cron.log")| crontab -
+RUN (crontab -l ; echo "7 * * * * perl -le 'sleep rand 400' && sh /code/run-backup.sh hourly >> /code/backups-cron.log")| crontab -
 # Do daily backup at midnight
-RUN (crontab -l ; echo "10 0 * * * sh /code/run-backup.sh daily >> /code/backups-cron.log")| crontab -
+RUN (crontab -l ; echo "10 0 * * * perl -le 'sleep rand 400' && sh /code/run-backup.sh daily >> /code/backups-cron.log")| crontab -
 
 
 RUN mkdir -p /code
