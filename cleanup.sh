@@ -17,8 +17,8 @@ esac
 
 
 echo "cleanup s3:" $BACKUP_RATE ", everything which is older than" $OLDER_THAN "=>" `date --date "$OLDER_THAN" +%s`
-export AWS_ACCESS_KEY_ID="$AWS_ACCESS_KEY_ID"
-export AWS_SECRET_ACCESS_KEY="$AWS_SECRET_ACCESS_KEY"
+export AWS_ACCESS_KEY_ID="$EXO_ACCESS_KEY_ID"
+export AWS_SECRET_ACCESS_KEY="$EXO_SECRET_ACCESS_KEY"
 cmd="aws s3 ls s3://$S3_BUCKET_NAME/$BUCKET_PATH/$BACKUP_RATE/ --endpoint-url $S3_ENDPOINT"
 $cmd | while read -r line;
 do

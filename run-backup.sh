@@ -35,18 +35,19 @@ S3_URI="s3://$S3_BUCKET_NAME/$BUCKET_PATH/$BACKUP_RATE/$PREFIX-$DATE.archive.gpg
 echo "> Running mongodump"
 mongodump --host ${MONGO_HOST} --port ${MONGO_PORT} -u ${MONGO_USER} -p ${MONGO_PASSWORD} ${USE_SSL:+--ssl} --sslAllowInvalidCertificates --archive=$FILE
 
-echo "> import public key from /var/gpgkeys/"
-gpg --import ${GPG_PUBKEY_PATH}
+echo "> import public keys from /var/gpgkeys/"
+gpg --import ${DOMI_GPG_PUBKEY_PATH} ${RUBEN_GPG_PUBKEY_PATH}
 
 echo "> Encrypting dump file using gpg"
-KEYID=`gpg --batch --with-colons ${GPG_PUBKEY_PATH} | head -n1 | cut -d: -f5`
-gpg --always-trust -v -e -r ${KEYID} -o $GPG_FILE $FILE
+DOMI_KEYID=`gpg --batch --with-colons ${DOMI_GPG_PUBKEY_PATH} | head -n1 | cut -d: -f5`
+RUBEN_KEYID=`gpg --batch --with-colons ${RUBEN_GPG_PUBKEY_PATH} | head -n1 | cut -d: -f5`
+gpg --always-trust -v -e -r ${DOMI_KEYID} -r ${RUBEN_KEYID} -o $GPG_FILE $FILE
 
 echo "> Zipping dump file"
 gzip -9 $GPG_FILE
 
 echo "> Uploading to S3"
-AWS_ACCESS_KEY_ID="$AWS_ACCESS_KEY_ID" AWS_SECRET_ACCESS_KEY="$AWS_SECRET_ACCESS_KEY" aws s3 cp "$GPG_FILE.gz" "$S3_URI" --endpoint-url "$S3_ENDPOINT" --acl bucket-owner-full-control
+AWS_ACCESS_KEY_ID="$EXO_ACCESS_KEY_ID" AWS_SECRET_ACCESS_KEY="$EXO_SECRET_ACCESS_KEY" aws s3 cp "$GPG_FILE.gz" "$S3_URI" --endpoint-url "$S3_ENDPOINT" --acl bucket-owner-full-control
 
 # Clean up
 echo "> Cleanup local files"
