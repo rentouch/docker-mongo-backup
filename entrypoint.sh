@@ -1,8 +1,9 @@
 set -e # stop if any of these commands fail
 
-: ${GPG_PUBKEY_PATH:?"-e GPG_PUBKEY_PATH is not set"}
-: ${AWS_ACCESS_KEY_ID:?"-e AWS_ACCESS_KEY_ID is not set"}
-: ${AWS_SECRET_ACCESS_KEY:?"-e AWS_SECRET_ACCESS_KEY is not set"}
+: ${DOMI_GPG_PUBKEY_PATH:?"-e DOMI_GPG_PUBKEY_PATH is not set"}
+: ${RUBEN_GPG_PUBKEY_PATH:?"-e RUBEN_GPG_PUBKEY_PATH is not set"}
+: ${EXO_ACCESS_KEY_ID:?"-e AWS_ACCESS_KEY_ID is not set"}
+: ${EXO_SECRET_ACCESS_KEY:?"-e AWS_SECRET_ACCESS_KEY is not set"}
 : ${S3_BUCKET_NAME:?"-e S3_BUCKET_NAME is not set"}
 : ${PREFIX:?"-e PREFIX is not set"}
 
